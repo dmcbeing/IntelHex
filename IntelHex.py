@@ -17,11 +17,12 @@ try:
 	while bytes32 != b'':
 		line = ":"+"%0.2X"%(len(bytes32))
 		line = line + "%0.4X"%(addr)+"00"
-		chk = 0
+		chk = len(bytes32) + (addr & 255) + (addr>>8)&255 + (addr>>16)&255 + (addr>>24)&255
 		for byte in bytes32:
 			line = line + "%0.2X"%byte
 			chk = chk + int(byte)
-		out_hex.write(line+"%0.2X"%(256-(chk%256))+"\n")
+		chk = (256-(chk & 255)) & 255
+		out_hex.write(line+"%0.2X"%(chk)+"\n")
 		addr = addr + len(bytes32)
 		bytes32 = in_bin.read(32)
 	out_hex.write(":00000001FF\n")
